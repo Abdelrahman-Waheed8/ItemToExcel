@@ -4,10 +4,8 @@ namespace ItemToExcel.Data.Model
 {
     public class Item
     {
-        [Required]
         public int Id { get; set; }
-        [Required]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public decimal BeforeDiscount { get; set; }
         public decimal AfterDiscount { get; set; }
         public int CategoryId { get; set; }
