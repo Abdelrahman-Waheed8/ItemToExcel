@@ -1,4 +1,5 @@
 using ItemToExcel.Data.AppDbContext;
+using ItemToExcel.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
-
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
