@@ -1,16 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace ItemToExcel.Data.Dto
 {
-    public class CategoryCreateDTO
-    {
-        [Required(ErrorMessage ="Category name required")]
-        public string name { get; set; }
-    }
+    public record CategoryCreateDTO(string catName);
 
-    public class CategoryResponseDTO
-    {
-        public int id { get; set; }
-        public string name { get; set; }
-    }
+    public record CattegoryUpdateDTO(int Id, string catName);
 }

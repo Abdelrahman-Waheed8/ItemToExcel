@@ -4,7 +4,7 @@ namespace ItemToExcel.Repository
 {
     public interface IItemRepository
     {
-        public Task<Item> GetAllAsync();
+        public Task<IEnumerable<Item>> GetAllAsync();
 
         public Task<Item> GetByIdAsync(int id);
         public Task<Item> AddItemAsync(Item item);
