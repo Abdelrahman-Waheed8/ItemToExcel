@@ -1,8 +1,10 @@
-﻿using ItemToExcel.Data.Dto;
+﻿using ItemToExcel.Data.AppDbContext;
+using ItemToExcel.Data.Dto;
 using ItemToExcel.Data.Model;
 using ItemToExcel.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ItemToExcel.Controllers
 {
@@ -11,27 +13,34 @@ namespace ItemToExcel.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemRepository _itemRepo;
-        public ItemController(IItemRepository itemRepo)
+        private readonly AppDbContext _db;
+        public ItemController(IItemRepository itemRepo, AppDbContext db)
         {
             _itemRepo = itemRepo;
+            _db = db;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetItems()
         {
             var items = await _itemRepo.GetAllAsync();
-            return Ok(items);
+            var response = items.Select(i => new ItemResponseDTO(
+                i.Id, i.Name, i.BeforeDiscount, i.AfterDiscount, i.CategoryId, i.Category.Name
+            ));
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetItemById(int id)
         {
             var item = await _itemRepo.GetByIdAsync(id);
-            return Ok(item);
+            var response = new ItemResponseDTO
+                (item.Id, item.Name, item.BeforeDiscount, item.AfterDiscount, item.CategoryId, item.Category.Name);
+            return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddItem([FromBody] ItemCreateDTO itemDTO)
+        public async Task<IActionResult> AddItem([FromBody]ItemCreateDTO itemDTO)
         {
             var item = new Item
             {
@@ -40,18 +49,23 @@ namespace ItemToExcel.Controllers
                 AfterDiscount = itemDTO.afterDiscount,
                 CategoryId = itemDTO.catID
             };
+            await _itemRepo.AddItemAsync(item);
 
-            var created = await _itemRepo.AddItemAsync(item);
-            var response = new ItemResponseDTO
-            (
-                created.Id,
-                created.Name,
-                created.BeforeDiscount,
-                created.AfterDiscount,
-                itemDTO.catID,
-                null
-            );
-            return Ok(response);
+            return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatedItem(int id, [FromBody] ItemCreateDTO itemdto)
+        {
+            await _itemRepo.UpdateItemAsync(id, itemdto);
+            return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteItem(int id)
+        {
+            await _itemRepo.DeleteItemAsync(id);
+            return Ok();
         }
     }
 }

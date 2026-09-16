@@ -1,6 +1,7 @@
 using ItemToExcel.Data.AppDbContext;
 using ItemToExcel.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
