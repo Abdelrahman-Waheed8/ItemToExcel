@@ -16,7 +16,8 @@ namespace ItemToExcel.Repository
         {
             await _context.Items.AddAsync(item);
             await _context.SaveChangesAsync();
-            return await _context.Items.Include(x => x.Category).FirstOrDefaultAsync(x => x.Id == item.Id);
+            var response = await GetByIdAsync(item.Id);
+            return response;
         }
 
         public async Task DeleteItemAsync(int id)
@@ -50,7 +51,7 @@ namespace ItemToExcel.Repository
             itemToBeUpdated.AfterDiscount = item.afterDiscount;
             itemToBeUpdated.CategoryId = item.catID;
             await _context.SaveChangesAsync();
-            var response = await _context.Items.Include(x => x.Category).FirstAsync(x => x.Id == itemToBeUpdated.Id);
+            var response = await GetByIdAsync(itemToBeUpdated.Id);
             return response;
         }
     }
