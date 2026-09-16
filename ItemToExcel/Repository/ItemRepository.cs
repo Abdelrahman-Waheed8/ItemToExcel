@@ -40,7 +40,7 @@ namespace ItemToExcel.Repository
             return item;
         }
 
-        public async Task UpdateItemAsync(int id, ItemCreateDTO item)
+        public async Task<Item> UpdateItemAsync(int id, ItemCreateDTO item)
         {
             var itemToBeUpdated = await _context.Items.FirstOrDefaultAsync(x => x.Id == id);
             if (itemToBeUpdated == null) throw new KeyNotFoundException("Couldnt find item");
@@ -50,6 +50,8 @@ namespace ItemToExcel.Repository
             itemToBeUpdated.AfterDiscount = item.afterDiscount;
             itemToBeUpdated.CategoryId = item.catID;
             await _context.SaveChangesAsync();
+            var response = await _context.Items.Include(x => x.Category).FirstAsync(x => x.Id == itemToBeUpdated.Id);
+            return response;
         }
     }
 }

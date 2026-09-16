@@ -9,7 +9,7 @@ namespace ItemToExcel.Repository
 
         public Task<Item> GetByIdAsync(int id);
         public Task<Item> AddItemAsync(Item item);
-        public Task UpdateItemAsync(int id, ItemCreateDTO item);
+        public Task<Item> UpdateItemAsync(int id, ItemCreateDTO item);
         public Task DeleteItemAsync(int id);
     }
 }

@@ -49,16 +49,17 @@ namespace ItemToExcel.Controllers
                 AfterDiscount = itemDTO.afterDiscount,
                 CategoryId = itemDTO.catID
             };
-            await _itemRepo.AddItemAsync(item);
-
-            return Ok();
+            var added = await _itemRepo.AddItemAsync(item);
+            var response = new ItemResponseDTO(added.Id,added.Name,added.BeforeDiscount,added.AfterDiscount,added.CategoryId,added.Category.Name);
+            return Ok(response);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatedItem(int id, [FromBody] ItemCreateDTO itemdto)
         {
-            await _itemRepo.UpdateItemAsync(id, itemdto);
-            return Ok();
+            var updated = await _itemRepo.UpdateItemAsync(id, itemdto);
+            var response = new ItemResponseDTO(updated.Id, updated.Name, updated.BeforeDiscount, updated.AfterDiscount, updated.CategoryId, updated.Category.Name);
+            return Ok(response);
         }
 
         [HttpDelete("{id}")]
