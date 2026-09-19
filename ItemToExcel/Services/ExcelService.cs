@@ -26,7 +26,7 @@ namespace ItemToExcel.Services
                 var row = 2;
                 foreach(var item in group)
                 {
-                    var range = ws.Range(row, row, row, 3);
+                    var range = ws.Range(row, 1, row, 3);
                     ws.Cell(row, 1).Value = item.beforeDiscount;
                     ws.Cell(row, 2).Value = item.afterDiscount;
                     ws.Cell(row, 3).Value = item.Name;
