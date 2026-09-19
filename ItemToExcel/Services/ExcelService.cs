@@ -32,6 +32,7 @@ namespace ItemToExcel.Services
                     ws.Cell(row, 3).Value = item.Name;
                     range.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
                     range.Style.Border.SetInsideBorder(XLBorderStyleValues.Thin);
+                    row++;
                 }
                 ws.Columns().AdjustToContents();
             }

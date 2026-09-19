@@ -2,6 +2,7 @@
 using ItemToExcel.Data.Dto;
 using ItemToExcel.Data.Model;
 using ItemToExcel.Repository;
+using ItemToExcel.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,11 +14,21 @@ namespace ItemToExcel.Controllers
     public class ItemController : ControllerBase
     {
         private readonly IItemRepository _itemRepo;
-        private readonly AppDbContext _db;
-        public ItemController(IItemRepository itemRepo, AppDbContext db)
+        private readonly IExcelService _excelService;
+        public ItemController(IItemRepository itemRepo, IExcelService excelService)
         {
             _itemRepo = itemRepo;
-            _db = db;
+            _excelService = excelService;
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportFile()
+        {
+            var items = await _itemRepo.GetAllAsync();
+            var response = items.Select(i => new ItemResponseDTO(i.Id, i.Name, i.BeforeDiscount, i.AfterDiscount, i.CategoryId, i.Category.Name));
+
+            var bytes = _excelService.GenerateItemsFile(response);
+            return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "item.xlsx");
         }
 
         [HttpGet]
